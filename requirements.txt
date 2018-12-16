@@ -1,0 +1,13 @@
+pyasn1 == 0.4.1
+pandas-gbq==0.4.0
+selenium
+oauth2client
+google-api-python-client
+pandas==0.19.2
+numpy
+scipy
+google.cloud
+gcloud
+requests
+bs4
+lxml
