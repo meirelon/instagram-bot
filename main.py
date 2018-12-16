@@ -35,8 +35,15 @@ def main(argv=None):
 	instagram_bot = bot.InstagramBot(chromedriver_path=args.chromedriver_path,
 									username=args.username,
 									password=args.password)
-	instagram_bot.login()
-	instagram_bot.follow_hashtags(file_path=args.file_path)
+	# First login to the website
+	login_webdriver = instagram_bot.login()
+
+	hashtag_list = args.hashtag_list.split(" ")
+	for hashtag in hashtag_list:
+		try:
+			instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
+		except:
+			continue
 
 if __name__ == '__main__':
 	main()

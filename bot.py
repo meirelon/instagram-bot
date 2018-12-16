@@ -10,8 +10,12 @@ class InstagramBot:
         self.username = username
         self.password = password
 
+    def driver(self):
+        return seleniumWebDriver.Chrome(executable_path=self.chromedriver_path)
+
+
     def login(self):
-        webdriver = seleniumWebDriver.Chrome(executable_path=self.chromedriver_path)
+        webdriver = self.driver()
         sleep(2)
         webdriver.get('https://www.instagram.com/accounts/login/?source=auth_switcher')
         sleep(3)
@@ -24,13 +28,13 @@ class InstagramBot:
         button_login = webdriver.find_element_by_css_selector('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(3) > button')
         button_login.click()
         sleep(3)
+        return webdriver
 
-        notnow = webdriver.find_element_by_css_selector('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm')
-        notnow.click() #comment these last 2 lines out, if you don't get a pop up asking about notifications
+        # notnow = webdriver.find_element_by_css_selector('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm')
+        # notnow.click() #comment these last 2 lines out, if you don't get a pop up asking about notifications
 
-    def follow_hashtags(pages=10, file_path=None):
+    def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10, file_path=None):
         # hashtag_list = [x.strip() for x in hashtag_list.split(" ")]
-        hashtag_list = ['travelblog', 'travelblogger', 'traveler']
 
         prev_user_list = [] #- if it's the first time you run it, use this line and comment the two below
         # prev_user_list = pd.read_csv(file_path, delimiter=',').iloc[:,1:2] # useful to build a user log
@@ -43,67 +47,61 @@ class InstagramBot:
         likes = 0
         comments = 0
 
-        for hashtag in hashtag_list:
-            tag += 1
-            webdriver.get('https://www.instagram.com/explore/tags/'+ hashtag_list[tag] + '/')
-            sleep(5)
-            first_thumbnail = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/article/div[1]/div/div/div[1]/div[1]/a/div')
+        webdriver.get('https://www.instagram.com/explore/tags/'+ hashtag + '/')
+        sleep(5)
+        first_thumbnail = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/article/div[1]/div/div/div[1]/div[1]/a/div')
 
-            first_thumbnail.click()
-            sleep(randint(1,2))
-            try:
-                for x in range(1,pages):
-                    username = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
+        first_thumbnail.click()
+        sleep(randint(1,2))
+        for x in range(1,pages):
+            username = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
 
-                    if username not in prev_user_list:
-                        # If we already follow, do not unfollow
-                        if webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').text == 'Follow':
+            if username not in prev_user_list:
+                # If we already follow, do not unfollow
+                if webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').text == 'Follow':
 
-                            webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').click()
+                    webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').click()
 
-                            new_followed.append(username)
-                            followed += 1
+                    new_followed.append(username)
+                    followed += 1
 
-                            # Liking the picture
-                            button_like = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
+                    # Liking the picture
+                    button_like = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
 
-                            button_like.click()
-                            likes += 1
-                            sleep(randint(18,25))
+                    button_like.click()
+                    likes += 1
+                    sleep(randint(18,25))
 
-                            # Comments and tracker
-                            comm_prob = randint(1,10)
-                            print('{}_{}: {}'.format(hashtag, x,comm_prob))
-                            if comm_prob > 7:
-                                comments += 1
-                                webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[2]/button/span').click()
-                                comment_box = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
+                    # Comments and tracker
+                    comm_prob = randint(1,10)
+                    print('{}_{}: {}'.format(hashtag, x,comm_prob))
+                    if comm_prob > 7:
+                        comments += 1
+                        webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[2]/button/span').click()
+                        comment_box = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
 
-                                if (comm_prob < 7):
-                                    comment_box.send_keys('Really cool!')
-                                    sleep(1)
-                                elif (comm_prob > 6) and (comm_prob < 9):
-                                    comment_box.send_keys('Nice work :)')
-                                    sleep(1)
-                                elif comm_prob == 9:
-                                    comment_box.send_keys('Nice gallery!!')
-                                    sleep(1)
-                                elif comm_prob == 10:
-                                    comment_box.send_keys('So cool! :)')
-                                    sleep(1)
-                                # Enter to post comment
-                                comment_box.send_keys(Keys.ENTER)
-                                sleep(randint(22,28))
+                        if (comm_prob < 7):
+                            comment_box.send_keys('Really cool!')
+                            sleep(1)
+                        elif (comm_prob > 6) and (comm_prob < 9):
+                            comment_box.send_keys('Nice work :)')
+                            sleep(1)
+                        elif comm_prob == 9:
+                            comment_box.send_keys('Nice gallery!!')
+                            sleep(1)
+                        elif comm_prob == 10:
+                            comment_box.send_keys('So cool! :)')
+                            sleep(1)
+                        # Enter to post comment
+                        comment_box.send_keys(Keys.ENTER)
+                        sleep(randint(22,28))
 
-                        # Next picture
-                        webdriver.find_element_by_link_text('Next').click()
-                        sleep(randint(25,29))
-                    else:
-                        webdriver.find_element_by_link_text('Next').click()
-                        sleep(randint(20,26))
-            # some hashtag stops refreshing photos (it may happen sometimes), it continues to the next
-            except:
-                continue
+                # Next picture
+                webdriver.find_element_by_link_text('Next').click()
+                sleep(randint(25,29))
+            else:
+                webdriver.find_element_by_link_text('Next').click()
+                sleep(randint(20,26))
 
         for n in range(0,len(new_followed)):
             prev_user_list.append(new_followed[n])

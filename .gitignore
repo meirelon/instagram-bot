@@ -116,3 +116,4 @@ dmypy.json
 # Other handles
 *.test
 *.ipynb
+*.csv
