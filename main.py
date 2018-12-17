@@ -40,6 +40,7 @@ def main(argv=None):
 
 	hashtag_list = args.hashtag_list.split(" ")
 	for hashtag in hashtag_list:
+		print(hashtag)
 		try:
 			instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
 		except:
