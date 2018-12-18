@@ -63,7 +63,6 @@ class InstagramBot:
                 if username not in prev_user_list:
                     # If we already follow, do not unfollow
                     if webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').text == 'Follow':
-
                         webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').click()
 
                         new_followed.append(username)
@@ -71,7 +70,6 @@ class InstagramBot:
 
                         # Liking the picture
                         button_like = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
-
                         button_like.click()
                         likes += 1
                         sleep(randint(18,25))
