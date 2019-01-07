@@ -6,7 +6,7 @@ set -ex
 REPOSITORY=
 IMAGE_LOCATION=gcr.io/scarlet-labs
 RUN_IMAGE_NAME=selenium-py37-image
-RUN_IMAGE_VERSION=$(date +"%Y%m%dT%H%M%S")-$(git rev-parse --short HEAD)
+RUN_IMAGE_VERSION=$(date +"%Y%m%dT%H%M%S")
 
 mkdir -p target/docker
 
