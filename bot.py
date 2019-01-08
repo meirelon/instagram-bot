@@ -1,5 +1,6 @@
 from selenium import webdriver as seleniumWebDriver
 from selenium.webdriver.common.keys import Keys
+from datetime import datetime
 from time import sleep, strftime
 from random import randint
 import pandas as pd
@@ -33,16 +34,13 @@ class InstagramBot:
         # notnow = webdriver.find_element_by_css_selector('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm')
         # notnow.click() #comment these last 2 lines out, if you don't get a pop up asking about notifications
 
-    def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10, file_path=None):
+    def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10):
         # hashtag_list = [x.strip() for x in hashtag_list.split(" ")]
 
         prev_user_list = [] #- if it's the first time you run it, use this line and comment the two below
-        if file_path:
-            prev_user_list = pd.read_csv(file_path, delimiter=',').iloc[:,1:2] # useful to build a user log
-            prev_user_list = list(prev_user_list['0'])
-
-
         new_followed = []
+        new_followed_datetime = []
+        comment_list = []
         tag = -1
         followed = 0
         likes = 0
@@ -56,7 +54,7 @@ class InstagramBot:
 
         first_thumbnail.click()
         sleep(randint(1,2))
-        for x in range(1,pages):
+        for x in range(1,int(pages)):
             try:
                 username = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
 
@@ -66,18 +64,19 @@ class InstagramBot:
                         webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').click()
 
                         new_followed.append(username)
+                        new_followed_datetime.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                         followed += 1
 
                         # Liking the picture
                         button_like = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
                         button_like.click()
                         likes += 1
-                        sleep(randint(18,25))
+                        sleep(randint(5,10))
 
                         # Comments and tracker
                         comment_choices = ["Really Cool!", "Nice Work :)", "Nice job!", "So cool! :)", "Wow, this is awesome!"]
                         comm_prob = randint(0,7)
-                        print('{}_{}: {}'.format(hashtag, x,comm_prob), end=" ")
+                        print('{}_{}: {}'.format(hashtag, x, comm_prob), end=" ")
 
                         if comm_prob <= len(comment_choices):
                             comments += 1
@@ -88,22 +87,22 @@ class InstagramBot:
                             sleep(1)
                             # Enter to post comment
                             comment_box.send_keys(Keys.ENTER)
-                            sleep(randint(22,28))
+                            sleep(randint(5,20))
 
                     # Next picture
                     webdriver.find_element_by_link_text('Next').click()
-                    sleep(randint(25,29))
+                    sleep(randint(5,10))
                 else:
                     webdriver.find_element_by_link_text('Next').click()
-                    sleep(randint(20,26))
+                    sleep(randint(5,10))
             except:
                 continue
 
-        for n in range(0,len(new_followed)):
-            prev_user_list.append(new_followed[n])
+        account_column = [self.username] * len(new_followed)
+        hashtag_column = [hashtag] * len(new_followed)
+        updated_user_df = pd.DataFrame({"followed_username":new_followed,
+                                        "followed_datetime":new_followed_datetime,
+                                        "hashtag":hashtag_column,
+                                        "master_account":account_column})
 
-        updated_user_df = pd.DataFrame(prev_user_list)
-        updated_user_df.to_csv('{}_users_followed_list.csv'.format(strftime("%Y%m%d-%H%M%S")), index=False)
-        print('Liked {} photos.'.format(likes))
-        print('Commented {} photos.'.format(comments))
-        print('Followed {} new people.'.format(followed))
+        return updated_user_df

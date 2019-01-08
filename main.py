@@ -1,5 +1,7 @@
 import argparse
+import re
 import bot
+import pandas as pd
 
 
 def main(argv=None):
@@ -17,10 +19,6 @@ def main(argv=None):
 	                    dest='password',
 	                    default = None,
 	                    help='Password')
-	parser.add_argument('--file_path',
-	                    dest='file_path',
-	                    default = None,
-	                    help='File Path')
 	parser.add_argument('--pages',
 	                    dest='pages',
 	                    default = int(200),
@@ -38,13 +36,26 @@ def main(argv=None):
 	# First login to the website
 	login_webdriver = instagram_bot.login()
 
-	hashtag_list = args.hashtag_list.split(" ")
+
+	if bool(re.search(string=args.hashtag_list.lower(), pattern="[.]csv")):
+		hashtag_list = [x[1:].strip()
+            for x in pd.read_csv(args.hashtag_list, header=None)[0].values]
+	else:
+		hashtag_list = args.hashtag_list.split(" ")
+
 	for hashtag in hashtag_list:
 		print(hashtag)
 		try:
-			instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
+			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
+			df.to_gbq(project_id="scarlet-labs",
+										 private_key="scarlet-labs.json",
+										 destination_table="instagram.followed_master_table",
+										 if_exists="append",
+										 chunksize=100,
+										 verbose=True)
 		except:
 			continue
+
 
 if __name__ == '__main__':
 	main()
