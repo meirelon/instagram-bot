@@ -39,7 +39,7 @@ def main(argv=None):
 
 	if bool(re.search(string=args.hashtag_list.lower(), pattern="[.]csv")):
 		hashtag_list = [x[1:].strip()
-            for x in pd.read_csv(args.hashtag_list, header=None)[0].values]
+            for x in pd.read_csv(args.hashtag_list, header=None)[0].values if len(x) > 0]
 	else:
 		hashtag_list = args.hashtag_list.split(" ")
 
