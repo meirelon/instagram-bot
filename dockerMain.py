@@ -1,16 +1,11 @@
 import argparse
 import re
-import bot
+import dockerBot
 import pandas as pd
 
 
 def main(argv=None):
 	parser = argparse.ArgumentParser()
-
-	parser.add_argument('--chromedriver_path',
-	                    dest='chromedriver_path',
-	                    default = None,
-	                    help='Chromedriver Path')
 	parser.add_argument('--username',
 	                    dest='username',
 	                    default = None,
@@ -30,9 +25,7 @@ def main(argv=None):
 
 	args, _ = parser.parse_known_args(argv)
 
-	instagram_bot = bot.InstagramBot(chromedriver_path=args.chromedriver_path,
-									username=args.username,
-									password=args.password)
+	instagram_bot = dockerBot.InstagramBot(username=args.username, password=args.password)
 	# First login to the website
 	login_webdriver = instagram_bot.login()
 
@@ -48,7 +41,6 @@ def main(argv=None):
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
 			df.to_gbq(project_id="scarlet-labs",
-										 private_key="scarlet-labs.json",
 										 destination_table="instagram.followed_master_table",
 										 if_exists="append",
 										 chunksize=100,
