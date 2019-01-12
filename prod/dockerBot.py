@@ -7,8 +7,7 @@ from random import randint
 import pandas as pd
 
 class InstagramBot:
-    def __init__(self, chromedriver_path, username, password):
-        self.chromedriver_path = chromedriver_path
+    def __init__(self, username, password):
         self.username = username
         self.password = password
 
