@@ -49,6 +49,7 @@ def main(argv=None):
 										 chunksize=100,
 										 verbose=True)
 		except Exception as e:
+			print(e)
 			logging.debug(e)
 			continue
 
