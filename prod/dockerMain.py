@@ -8,6 +8,14 @@ import pandas as pd
 
 def main(argv=None):
 	parser = argparse.ArgumentParser()
+	parser.add_argument('--project_id',
+	                    dest='project_id',
+	                    default = "scarlet-labs",
+	                    help='This is the GCP project you wish to send the data')
+	parser.add_argument('--destination_table',
+	                    dest='destination_table',
+	                    default = "followed_master_table",
+	                    help='This is the GCP project you wish to send the data')
 	parser.add_argument('--username',
 	                    dest='username',
 	                    default = None,
@@ -19,11 +27,11 @@ def main(argv=None):
 	parser.add_argument('--pages',
 	                    dest='pages',
 	                    default = int(20),
-	                    help='This is the GCP project you wish to send the data')
+	                    help='Number of pages to scan')
 	parser.add_argument('--hashtag_list',
 	                    dest='hashtag_list',
 	                    default = "travelblog travelblogger traveler",
-	                    help='This is the GCP project you wish to send the data')
+	                    help='total hashtags to scan')
 
 	args, _ = parser.parse_known_args(argv)
 
@@ -42,9 +50,9 @@ def main(argv=None):
 		print(hashtag)
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
-			df.to_gbq(project_id="scarlet-labs",
-										private_key="scarlet-labs.json",
-										 destination_table="instagram.followed_master_table",
+			df.to_gbq(project_id=args.project_id,
+										 private_key="scarlet-labs.json",
+										 destination_table="instagram.{destination_table}".format(destination_table=args.destination_table),
 										 if_exists="append",
 										 chunksize=100,
 										 verbose=True)
