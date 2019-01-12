@@ -42,6 +42,7 @@ def main(argv=None):
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
 			df.to_gbq(project_id="scarlet-labs",
+										private_key="scarlet-labs.json",
 										 destination_table="instagram.followed_master_table",
 										 if_exists="append",
 										 chunksize=100,
