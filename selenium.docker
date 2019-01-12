@@ -26,4 +26,6 @@ RUN pip install -r requirements.txt
 WORKDIR /prod
 
 #Set Entrypoint
+COPY dockerMain.py .
+COPY dockerBot.py .
 ENTRYPOINT ["python", "dockerMain.py"]
