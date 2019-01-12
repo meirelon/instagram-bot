@@ -1,4 +1,5 @@
 import os
+import logging
 import argparse
 import re
 import dockerBot
@@ -47,7 +48,8 @@ def main(argv=None):
 										 if_exists="append",
 										 chunksize=100,
 										 verbose=True)
-		except:
+		except Exception as e:
+			logging.debug(e)
 			continue
 
 
