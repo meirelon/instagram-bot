@@ -96,7 +96,7 @@ def main(argv=None):
 										 chunksize=100,
 										 verbose=True)
 
-			# sleep(2)
+			sleep(10)
 			# if exists(d="instagram", t="latest_run"):
 			async_query(query=final_table_query,
 						dataset_id="instagram",
