@@ -21,7 +21,7 @@ def async_query(query, project_id, dataset_id, dest_table):
     query_job.begin()
     return True
 
-def is_exists(d, t):
+def exists(d, t):
 	client = bigquery.Client.from_service_account_json("scarlet-labs.json")
 	dataset = bigquery.Dataset(d, client)
 	table = bigquery.Table(t, dataset)
@@ -86,7 +86,7 @@ def main(argv=None):
 										 chunksize=100,
 										 verbose=True)
 
-			if is_exists(d="instagram", t="latest_run"):
+			if exists(d="instagram", t="latest_run"):
 				sleep(2)
 				async_query(query=final_table_query,
 							project_id=args.project_id,
