@@ -62,10 +62,20 @@ def main(argv=None):
 	login_webdriver = instagram_bot.login()
 
 
-	final_table_query = """select *
-							from `scarlet-labs.instagram.latest_run`
-							union all(
-							select * from `scarlet-labs.instagram.followed_master_table`)"""
+	final_table_query = """SELECT
+						  *
+						FROM (
+						  SELECT
+						    *
+						  FROM
+						    `scarlet-labs.instagram.latest_run`
+						  UNION ALL (
+						    SELECT
+						      *
+						    FROM
+						      `scarlet-labs.instagram.followed_master_table`))
+						WHERE
+						  followed_datetime IS NOT NULL"""
 
 
 	if bool(re.search(string=args.hashtag_list.lower(), pattern="[.]csv")):
@@ -87,10 +97,11 @@ def main(argv=None):
 										 verbose=True)
 
 			# sleep(2)
-			# async_query(query=final_table_query,
-			# 			project_id=args.project_id,
-			# 			dataset_id="instagram",
-			# 			dest_table=args.destination_table)
+			if exists(d="instagram", t="latest_run"):
+				async_query(query=final_table_query,
+							project_id=args.project_id,
+							dataset_id="instagram",
+							dest_table=args.destination_table)
 		except Exception as e:
 			print(e)
 			logging.debug(e)
