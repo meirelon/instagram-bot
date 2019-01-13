@@ -65,7 +65,7 @@ def main(argv=None):
 	final_table_query = """select *
 							from `scarlet-labs.instagram.latest_run`
 							union all(
-							select * from `scarlet-labs.instagram.followed_master_table`)""".format(destination_table=args.destination_table)
+							select * from `scarlet-labs.instagram.followed_master_table`)"""
 
 
 	if bool(re.search(string=args.hashtag_list.lower(), pattern="[.]csv")):
@@ -86,12 +86,11 @@ def main(argv=None):
 										 chunksize=100,
 										 verbose=True)
 
-			if exists(d="instagram", t="latest_run"):
-				sleep(2)
-				async_query(query=final_table_query,
-							project_id=args.project_id,
-							dataset_id="instagram",
-							dest_table=args.destination_table)
+			sleep(2)
+			async_query(query=final_table_query,
+						project_id=args.project_id,
+						dataset_id="instagram",
+						dest_table=args.destination_table)
 		except Exception as e:
 			print(e)
 			logging.debug(e)
