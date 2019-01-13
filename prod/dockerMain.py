@@ -9,7 +9,7 @@ import pandas as pd
 
 from gcloud import bigquery
 
-def async_query(query, project_id, dataset_id, dest_table):
+def async_query(query, dataset_id, dest_table):
     client = bigquery.Client.from_service_account_json("scarlet-labs.json")
     query_job = client.run_async_query(str(uuid.uuid4()), query)
     query_job.use_legacy_sql = False
@@ -97,11 +97,10 @@ def main(argv=None):
 										 verbose=True)
 
 			# sleep(2)
-			if exists(d="instagram", t="latest_run"):
-				async_query(query=final_table_query,
-							project_id=args.project_id,
-							dataset_id="instagram",
-							dest_table=args.destination_table)
+			# if exists(d="instagram", t="latest_run"):
+			async_query(query=final_table_query,
+						dataset_id="instagram",
+						dest_table=args.destination_table)
 		except Exception as e:
 			print(e)
 			logging.debug(e)
