@@ -4,6 +4,6 @@ selenium==3.8.0
 oauth2client
 google-api-python-client
 pandas==0.19.2
-gcloud==0.18.3
 google.cloud
+gcloud==0.18.3
 requests
