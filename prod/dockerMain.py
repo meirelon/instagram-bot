@@ -86,11 +86,11 @@ def main(argv=None):
 										 chunksize=100,
 										 verbose=True)
 
-			sleep(2)
-			async_query(query=final_table_query,
-						project_id=args.project_id,
-						dataset_id="instagram",
-						dest_table=args.destination_table)
+			# sleep(2)
+			# async_query(query=final_table_query,
+			# 			project_id=args.project_id,
+			# 			dataset_id="instagram",
+			# 			dest_table=args.destination_table)
 		except Exception as e:
 			print(e)
 			logging.debug(e)
