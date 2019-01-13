@@ -21,6 +21,12 @@ def async_query(query, project_id, dataset_id, dest_table):
     query_job.begin()
     return True
 
+def is_exists(d, t):
+	client = bigquery.Client.from_service_account_json("scarlet-labs.json")
+	dataset = bigquery.Dataset(d, client)
+	table = bigquery.Table(t, dataset)
+	return table.exists()
+
 
 def main(argv=None):
 	parser = argparse.ArgumentParser()
@@ -72,6 +78,7 @@ def main(argv=None):
 		print(hashtag)
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
+			print(df.head())
 			df.to_gbq(project_id=args.project_id,
 										 private_key="scarlet-labs.json",
 										 destination_table="instagram.latest_run",
@@ -79,11 +86,12 @@ def main(argv=None):
 										 chunksize=100,
 										 verbose=True)
 
-			sleep(2)
-			async_query(query=final_table_query,
-						project_id=args.project_id,
-						dataset_id="instagram",
-						dest_table=args.destination_table)
+			if is_exists(d="instagram", t="latest_run"):
+				sleep(2)
+				async_query(query=final_table_query,
+							project_id=args.project_id,
+							dataset_id="instagram",
+							dest_table=args.destination_table)
 		except Exception as e:
 			print(e)
 			logging.debug(e)
