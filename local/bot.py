@@ -56,19 +56,21 @@ class InstagramBot:
         sleep(randint(1,2))
         for x in range(1,int(pages)):
             try:
-                username = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
+                # username = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
+                username = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
+
 
                 if username not in prev_user_list:
                     # If we already follow, do not unfollow
-                    if webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').text == 'Follow':
-                        webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').click()
+                    if webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').text == 'Follow':
+                        webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').click()
 
                         new_followed.append(username)
                         new_followed_datetime.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                         followed += 1
 
                         # Liking the picture
-                        button_like = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
+                        button_like = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
                         button_like.click()
                         likes += 1
                         sleep(randint(5,10))
@@ -80,8 +82,8 @@ class InstagramBot:
 
                         if comm_prob <= len(comment_choices):
                             comments += 1
-                            webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[1]/span[2]/button/span').click()
-                            comment_box = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
+                            webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[1]/span[2]/button/span').click()
+                            comment_box = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
 
                             comment_box.send_keys(comment_choices[comm_prob])
                             sleep(1)
@@ -95,7 +97,8 @@ class InstagramBot:
                 else:
                     webdriver.find_element_by_link_text('Next').click()
                     sleep(randint(5,10))
-            except:
+            except Exception as e:
+                print(e)
                 continue
 
         account_column = [self.username] * len(new_followed)
