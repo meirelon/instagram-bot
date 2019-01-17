@@ -87,8 +87,7 @@ def main(argv=None):
 		print(hashtag)
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
-			print(df.head())
-            print(df.dtypes)
+			print(df.dtypes)
 			df.to_gbq(project_id=args.project_id,
 										 private_key="scarlet-labs.json",
 										 destination_table="instagram.{}".format(args.destination_table),
