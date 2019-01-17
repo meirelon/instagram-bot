@@ -67,7 +67,7 @@ def main(argv=None):
 						  SELECT
 						    *
 						  FROM
-						    `scarlet-labs.instagram.tmp`
+						    `scarlet-labs.instagram.latest_run`
 						  UNION ALL (
 						    SELECT
 						      *
@@ -91,14 +91,14 @@ def main(argv=None):
 			df.to_gbq(project_id=args.project_id,
 										 private_key="scarlet-labs.json",
 										 destination_table="instagram.latest_run",
-										 if_exists="replace",
+										 if_exists="append",
 										 chunksize=100,
 										 verbose=True)
 
-			sleep(10)
-			df_to_bq = async_query(query=final_table_query,
-					              dataset_id="instagram",
-					              dest_table=args.destination_table)
+			# sleep(10)
+			# df_to_bq = async_query(query=final_table_query,
+			# 		              dataset_id="instagram",
+			# 		              dest_table=args.destination_table)
 
 		except Exception as e:
 			print(e)
