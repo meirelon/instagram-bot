@@ -18,8 +18,7 @@ def async_query(query, dataset_id, dest_table):
     query_job.destination = table
     query_job.create_disposition = "CREATE_IF_NEEDED"
     query_job.write_disposition = "WRITE_TRUNCATE"
-    query_job.begin()
-    return True
+    return query_job
 
 def exists(d, t):
 	client = bigquery.Client.from_service_account_json("scarlet-labs.json")
@@ -98,9 +97,10 @@ def main(argv=None):
 
 			sleep(10)
 			# if exists(d="instagram", t="latest_run"):
-			async_query(query=final_table_query,
-						dataset_id="instagram",
-						dest_table=args.destination_table)
+			df_to_bq = async_query(query=final_table_query,
+					              dataset_id="instagram",
+					              dest_table=args.destination_table)
+            df_to_bq.begin()
 		except Exception as e:
 			print(e)
 			logging.debug(e)
