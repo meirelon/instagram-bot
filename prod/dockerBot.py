@@ -1,6 +1,7 @@
 from selenium import webdriver as seleniumWebDriver
 from selenium.webdriver.common.keys import Keys
 
+import logging
 from datetime import datetime
 from time import sleep, strftime
 from random import randint
@@ -100,7 +101,9 @@ class InstagramBot:
                 else:
                     webdriver.find_element_by_link_text('Next').click()
                     sleep(randint(5,10))
-            except:
+            except Exception as e:
+                print(e)
+    			logging.debug(e)
                 continue
 
         account_column = [self.username] * len(new_followed)
