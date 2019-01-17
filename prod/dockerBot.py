@@ -90,10 +90,13 @@ class InstagramBot:
                             comment_box = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
 
                             comment_box.send_keys(comment_choices[comm_prob])
+                            comment_list.append(comment_choices[comm_prob])
                             sleep(1)
                             # Enter to post comment
                             comment_box.send_keys(Keys.ENTER)
                             sleep(randint(5,20))
+                        else:
+                            comment_list.append("no comment")
 
                     # Next picture
                     webdriver.find_element_by_link_text('Next').click()
@@ -110,6 +113,7 @@ class InstagramBot:
         hashtag_column = [hashtag] * len(new_followed)
         updated_user_df = pd.DataFrame({"followed_username":new_followed,
                                         "followed_datetime":new_followed_datetime,
+                                        "comment":comment_list,
                                         "hashtag":hashtag_column,
                                         "master_account":account_column})
 

@@ -7,25 +7,6 @@ from time import sleep
 import dockerBot
 import pandas as pd
 
-from gcloud import bigquery
-
-def async_query(query, dataset_id, dest_table):
-    client = bigquery.Client.from_service_account_json("scarlet-labs.json")
-    query_job = client.run_async_query(str(uuid.uuid4()), query)
-    query_job.use_legacy_sql = False
-    dataset = bigquery.Dataset(dataset_id, client)
-    table = bigquery.Table(dest_table, dataset)
-    query_job.destination = table
-    query_job.create_disposition = "CREATE_IF_NEEDED"
-    query_job.write_disposition = "WRITE_TRUNCATE"
-    return query_job.begin()
-
-def exists(d, t):
-	client = bigquery.Client.from_service_account_json("scarlet-labs.json")
-	dataset = bigquery.Dataset(d, client)
-	table = bigquery.Table(t, dataset)
-	return table.exists()
-
 
 def main(argv=None):
 	parser = argparse.ArgumentParser()
@@ -88,17 +69,13 @@ def main(argv=None):
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
 			print(df.dtypes)
-			df.to_gbq(project_id=args.project_id,
-										 private_key="scarlet-labs.json",
-										 destination_table="instagram.{}".format(args.destination_table),
-										 if_exists="append",
-										 chunksize=100,
-										 verbose=True)
-
-			# sleep(10)
-			# df_to_bq = async_query(query=final_table_query,
-			# 		              dataset_id="instagram",
-			# 		              dest_table=args.destination_table)
+            if len(df) > 0:
+    			df.to_gbq(project_id=args.project_id,
+    										 private_key="scarlet-labs.json",
+    										 destination_table="instagram.{}".format(args.destination_table),
+    										 if_exists="append",
+    										 chunksize=100,
+    										 verbose=True)
 
 		except Exception as e:
 			print(e)
