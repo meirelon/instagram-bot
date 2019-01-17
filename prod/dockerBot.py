@@ -43,7 +43,13 @@ class InstagramBot:
     def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10):
         # hashtag_list = [x.strip() for x in hashtag_list.split(" ")]
 
-        prev_user_list = [] #- if it's the first time you run it, use this line and comment the two below
+        prev_user_list = prev_user_list = list(pd.read_gbq(query="""select distinct followed_username
+                                                                    from `scarlet-labs.instagram.followed_master_table`
+                                                                    where master_account = '{username}'
+                                                                    """.format(username=self.username),
+                                                            project_id="scarlet-labs",
+                                                            private_key="scarlet-labs.json",
+                                                            dialect="standard")["followed_username"])
         new_followed = []
         new_followed_datetime = []
         comment_list = []
