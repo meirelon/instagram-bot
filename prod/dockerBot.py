@@ -103,7 +103,7 @@ class InstagramBot:
                     sleep(randint(5,10))
             except Exception as e:
                 print(e)
-    			logging.debug(e)
+                logging.debug(e)
                 continue
 
         account_column = [self.username] * len(new_followed)
