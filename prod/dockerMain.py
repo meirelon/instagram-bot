@@ -69,13 +69,12 @@ def main(argv=None):
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=args.pages)
 			print(df.dtypes)
-            if len(df) > 0:
-    			df.to_gbq(project_id=args.project_id,
-    										 private_key="scarlet-labs.json",
-    										 destination_table="instagram.{}".format(args.destination_table),
-    										 if_exists="append",
-    										 chunksize=100,
-    										 verbose=True)
+			df.to_gbq(project_id=args.project_id,
+										 private_key="scarlet-labs.json",
+										 destination_table="instagram.{}".format(args.destination_table),
+										 if_exists="append",
+										 chunksize=100,
+										 verbose=True)
 
 		except Exception as e:
 			print(e)
