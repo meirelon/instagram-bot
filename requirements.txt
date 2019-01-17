@@ -4,5 +4,5 @@ selenium==3.8.0
 google.cloud
 gcloud==0.18.3
 google-api-python-client
-pandas==0.20.0
+pandas==0.22.0
 requests
