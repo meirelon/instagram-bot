@@ -96,11 +96,11 @@ def main(argv=None):
 										 verbose=True)
 
 			sleep(10)
-			# if exists(d="instagram", t="latest_run"):
 			df_to_bq = async_query(query=final_table_query,
 					              dataset_id="instagram",
 					              dest_table=args.destination_table)
-            df_to_bq.begin()
+
+                                  df_to_bq.begin()
 		except Exception as e:
 			print(e)
 			logging.debug(e)
