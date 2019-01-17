@@ -67,7 +67,7 @@ def main(argv=None):
 						  SELECT
 						    *
 						  FROM
-						    `scarlet-labs.instagram.latest_run`
+						    `scarlet-labs.instagram.tmp`
 						  UNION ALL (
 						    SELECT
 						      *
