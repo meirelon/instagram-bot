@@ -8,12 +8,12 @@ import pandas as pd
 
 
 if __name__ == '__main__':
-	project_id = os.environ('project_id')
-	destination_table = os.environ('destination_table')
-	username = os.environ('username')
-	password = os.environ('password')
-	pages = os.environ('pages', 20)
-	hashtag_list = os.environ('hashtag_list', 'travelblog')
+	project_id = os.environ['project_id']
+	destination_table = os.environ['destination_table']
+	username = os.environ['username']
+	password = os.environ['password']
+	pages = os.environ['pages']
+	hashtag_list = os.environ['hashtag_list']
 
 	instagram_bot = dockerBot.InstagramBot(username=username, password=password)
 	# First login to the website
