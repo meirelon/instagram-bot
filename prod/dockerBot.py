@@ -122,6 +122,6 @@ class InstagramBot:
                                         "comment":comment_list,
                                         "hashtag":hashtag_column,
                                         "master_account":account_column}
-        updated_user_df = pd.DataFrame(dict([k,pd.Series(v) for kv in d.items]))
+        updated_user_df = pd.DataFrame.from_dict(d, orient='index')
 
-        return updated_user_df
+        return updated_user_df.transpose()
