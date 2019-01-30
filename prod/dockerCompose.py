@@ -7,7 +7,7 @@ import dockerBot
 import pandas as pd
 
 
-def main():
+if __name__ == '__main__':
 	project_id = os.environ('project_id')
 	destination_table = os.environ('destination_table')
 	username = os.environ('username')
@@ -22,7 +22,7 @@ def main():
 
 	if bool(re.search(string=hashtag_list.lower(), pattern="[.]csv")):
 		hashtag_list = [x[1:].strip()
-            for x in pd.read_csv(hashtag_list, header=None)[0].values if len(x) > 0]
+	        for x in pd.read_csv(hashtag_list, header=None)[0].values if len(x) > 0]
 	else:
 		hashtag_list = hashtag_list.split(" ")
 
@@ -41,7 +41,3 @@ def main():
 			print(e)
 			logging.debug(e)
 			continue
-
-
-if __name__ == '__main__':
-	main()
