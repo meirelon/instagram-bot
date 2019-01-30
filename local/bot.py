@@ -37,7 +37,13 @@ class InstagramBot:
     def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10):
         # hashtag_list = [x.strip() for x in hashtag_list.split(" ")]
 
-        prev_user_list = [] #- if it's the first time you run it, use this line and comment the two below
+        prev_user_list = prev_user_list = list(pd.read_gbq(query="""select distinct followed_username
+                                                                    from `scarlet-labs.instagram.followed_master_table`
+                                                                    where master_account = '{username}'
+                                                                    """.format(username=self.username),
+                                                            project_id="scarlet-labs",
+                                                            private_key="scarlet-labs.json",
+                                                            dialect="standard")["followed_username"])
         new_followed = []
         new_followed_datetime = []
         comment_list = []
@@ -50,15 +56,13 @@ class InstagramBot:
         # webdriver.get('https://www.instagram.com/'+ hashtag + '/') #for account pages
         sleep(5)
         first_thumbnail = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/article/div[1]/div/div/div[1]/div[1]/a/div')
-        # first_thumbnail = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div[3]/article/div[1]/div/div[1]/div[1]/a/div') #for account pages
+        # first_thumbnail = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a/div') #for account pages
 
         first_thumbnail.click()
         sleep(randint(1,2))
         for x in range(1,int(pages)):
             try:
-                # username = webdriver.find_element_by_xpath('/html/body/div[3]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
                 username = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
-
 
                 if username not in prev_user_list:
                     # If we already follow, do not unfollow
@@ -86,10 +90,13 @@ class InstagramBot:
                             comment_box = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
 
                             comment_box.send_keys(comment_choices[comm_prob])
+                            comment_list.append(comment_choices[comm_prob])
                             sleep(1)
                             # Enter to post comment
                             comment_box.send_keys(Keys.ENTER)
                             sleep(randint(5,20))
+                        else:
+                            comment_list.append("no comment")
 
                     # Next picture
                     webdriver.find_element_by_link_text('Next').click()
@@ -99,12 +106,19 @@ class InstagramBot:
                     sleep(randint(5,10))
             except Exception as e:
                 print(e)
+                logging.debug(e)
                 continue
 
         account_column = [self.username] * len(new_followed)
         hashtag_column = [hashtag] * len(new_followed)
+        print({"followed_username":len(new_followed),
+                                        "followed_datetime":len(new_followed_datetime),
+                                        "comment":len(comment_list),
+                                        "hashtag":len(hashtag_column),
+                                        "master_account":len(account_column)})
         updated_user_df = pd.DataFrame({"followed_username":new_followed,
                                         "followed_datetime":new_followed_datetime,
+                                        "comment":comment_list,
                                         "hashtag":hashtag_column,
                                         "master_account":account_column})
 

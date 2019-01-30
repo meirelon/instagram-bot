@@ -117,15 +117,11 @@ class InstagramBot:
 
         account_column = [self.username] * len(new_followed)
         hashtag_column = [hashtag] * len(new_followed)
-        print({"followed_username":len(new_followed),
-                                        "followed_datetime":len(new_followed_datetime),
-                                        "comment":len(comment_list),
-                                        "hashtag":len(hashtag_column),
-                                        "master_account":len(account_column)})
-        updated_user_df = pd.DataFrame({"followed_username":new_followed,
+        d = {"followed_username":new_followed,
                                         "followed_datetime":new_followed_datetime,
                                         "comment":comment_list,
                                         "hashtag":hashtag_column,
-                                        "master_account":account_column})
+                                        "master_account":account_column}
+        updated_user_df = pd.DataFrame(dict([k,pd.Series(v) for kv in d.items]))
 
         return updated_user_df
