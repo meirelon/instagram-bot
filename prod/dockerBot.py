@@ -90,7 +90,7 @@ class InstagramBot:
                         comm_prob = randint(0,7)
                         print('{}_{}: {}'.format(hashtag, x, comm_prob), end=" ")
 
-                        if comm_prob <= len(comment_choices):
+                        if comm_prob < len(comment_choices):
                             comments += 1
                             webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[1]/span[2]/button/span').click()
                             comment_box = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
