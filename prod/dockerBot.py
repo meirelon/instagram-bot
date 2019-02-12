@@ -40,6 +40,44 @@ class InstagramBot:
         # notnow = webdriver.find_element_by_css_selector('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm')
         # notnow.click() #comment these last 2 lines out, if you don't get a pop up asking about notifications
 
+    def unfollow_users(self, webdriver, total_users=11):
+        webdriver.get("https://www.instagram.com/{username}/following/".format(username=self.username))
+        following_button = webdriver.find_element_by_css_selector('#react-root > section > main > div > header > section > ul > li:nth-child(3) > a')
+        following_button.click()
+
+        q = """select distinct followed_username
+                from `scarlet-labs.instagram.followed_master_table`
+                where date(timestamp(followed_datetime)) < date_sub(current_date(), interval 3 day) and master_account = '{username}'
+                """.format(username=self.username)
+        unfollow_user_list = pd.read_gbq(query=q,
+                                         project_id="scarlet-labs",
+                                         dialect="standard",
+                                         verbose=False,
+                                         private_key="scarlet-labs.json")
+        unfollow_user_df = pd.DataFrame()
+
+        user = 0
+        while user < total_users:
+            user+=1
+            try:
+                username = webdriver.find_element_by_css_selector('body > div.RnEpo.Yx5HN > div > div.isgrP > ul > div > li:nth-child({user}) > div > div.Igw0E.IwRSH.YBx95.vwCYk'.format(user=user)).text.split("\n")[0]
+                print(username, end=' ')
+
+                if username in list(unfollow_user_list["followed_username"]):
+                    following = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/ul/div/li[{user}]/div/div[3]/button'.format(user=user))
+                    following.click()
+                    unfollow_button = webdriver.find_element_by_xpath('/html/body/div[3]/div/div/div[3]/button[1]')
+                    sleep(randint(1,3))
+                    unfollow_button.click()
+
+                    unfollow_user_df = pd.concat([unfollow_user_df, pd.DataFrame.from_dict({"username":username,
+                                "unfollowed_datetime":datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                "master_account":"colleenthehorse"}, orient="index").transpose()], axis=0)
+
+            except Exception as e:
+                print(e)
+        return unfollow_user_df
+
     def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10):
         # hashtag_list = [x.strip() for x in hashtag_list.split(" ")]
 

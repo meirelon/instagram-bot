@@ -19,6 +19,8 @@ if __name__ == '__main__':
 	# First login to the website
 	login_webdriver = instagram_bot.login()
 
+	unfollow_df = instagram_bot.unfollow_users()
+
 
 	if bool(re.search(string=hashtag_list.lower(), pattern="[.]csv")):
 		hashtag_list = [x[1:].strip()
