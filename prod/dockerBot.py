@@ -106,7 +106,8 @@ class InstagramBot:
         sleep(randint(1,2))
         for x in range(1,int(pages)):
             try:
-                username = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
+                # username = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
+                username = webdriver.find_element_by_xpath('/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
 
                 if username not in prev_user_list:
                     # If we already follow, do not unfollow
