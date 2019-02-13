@@ -80,6 +80,15 @@ class InstagramBot:
 
     def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10):
         # hashtag_list = [x.strip() for x in hashtag_list.split(" ")]
+        first_thumbnail_xpath = '//*[@id="react-root"]/section/main/article/div[1]/div/div/div[1]/div[1]/a/div'
+        username_xpath = '/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a'
+        follow_button_xpath = '/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button'
+        button_like_xpath = '/html/body/div[2]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span'
+        comment_button_xpath = '/html/body/div[2]/div[2]/div/article/div[2]/section[1]/span[2]/button/span'
+        comment_box_xpath = '/html/body/div[2]/div[2]/div/article/div[2]/section[3]/div/form/textarea'
+
+
+
 
         prev_user_list = prev_user_list = list(pd.read_gbq(query="""select distinct followed_username
                                                                     from `scarlet-labs.instagram.followed_master_table`
@@ -99,7 +108,7 @@ class InstagramBot:
         webdriver.get('https://www.instagram.com/explore/tags/'+ hashtag + '/')
         # webdriver.get('https://www.instagram.com/'+ hashtag + '/') #for account pages
         sleep(5)
-        first_thumbnail = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/article/div[1]/div/div/div[1]/div[1]/a/div')
+        first_thumbnail = webdriver.find_element_by_xpath(first_thumbnail_xpath)
         # first_thumbnail = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div[2]/article/div[1]/div/div[1]/div[1]/a/div') #for account pages
 
         first_thumbnail.click()
@@ -107,19 +116,29 @@ class InstagramBot:
         for x in range(1,int(pages)):
             try:
                 # username = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
-                username = webdriver.find_element_by_xpath('/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a').text
+                username = webdriver.find_element_by_xpath(username_xpath).text
 
                 if username not in prev_user_list:
                     # If we already follow, do not unfollow
-                    if webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').text == 'Follow':
-                        webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button').click()
+                    try:
+                        follow_button = webdriver.find_element_by_xpath(follow_button_xpath)
+                    except:
+                        follow_button = webdriver.find_element_by_css_selector('/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[2]/button')
+
+                    if follow_button.text == 'Follow':
+                        follow_button.click()
 
                         new_followed.append(username)
                         new_followed_datetime.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                         followed += 1
 
                         # Liking the picture
-                        button_like = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
+                        try:
+                            button_like = webdriver.find_element_by_xpath(button_like_xpath)
+                        except:
+                            button_like = webdriver.find_element_by_xpath('/html/body/div[2]/div[2]/div/article/div[2]/section[1]/span[1]/button/span')
+
+
                         button_like.click()
                         likes += 1
                         sleep(randint(5,10))
@@ -131,8 +150,16 @@ class InstagramBot:
 
                         if comm_prob < len(comment_choices):
                             comments += 1
-                            webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[1]/span[2]/button/span').click()
-                            comment_box = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
+
+                            try:
+                                webdriver.find_element_by_xpath(comment_button_xpath).click()
+                            except:
+                                webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[1]/span[2]/button/span').click()
+
+                            try:
+                                comment_box = webdriver.find_element_by_xpath(comment_box_xpath)
+                            except:
+                                comment_box = webdriver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div/article/div[2]/section[3]/div/form/textarea')
 
                             comment_box.send_keys(comment_choices[comm_prob])
                             comment_list.append(comment_choices[comm_prob])
