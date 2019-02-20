@@ -123,7 +123,7 @@ class InstagramBot:
                     try:
                         follow_button = webdriver.find_element_by_xpath(follow_button_xpath)
                     except:
-                        follow_button = webdriver.find_element_by_css_selector('/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[2]/button')
+                        follow_button = webdriver.find_element_by_xpath('/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[2]/button')
 
                     if follow_button.text == 'Follow':
                         # follow_button.click()

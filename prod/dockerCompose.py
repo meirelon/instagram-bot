@@ -19,13 +19,13 @@ if __name__ == '__main__':
 	# First login to the website
 	login_webdriver = instagram_bot.login()
 
-	unfollow_df = instagram_bot.unfollow_users(webdriver=login_webdriver)
-	unfollow_df.to_gbq(project_id=project_id,
-								 private_key="scarlet-labs.json",
-								 destination_table="instagram.{}".format("unfollows"),
-								 if_exists="append",
-								 chunksize=100,
-								 verbose=True)
+	# unfollow_df = instagram_bot.unfollow_users(webdriver=login_webdriver)
+	# unfollow_df.to_gbq(project_id=project_id,
+	# 							 private_key="scarlet-labs.json",
+	# 							 destination_table="instagram.{}".format("unfollows"),
+	# 							 if_exists="append",
+	# 							 chunksize=100,
+	# 							 verbose=True)
 
 
 	if bool(re.search(string=hashtag_list.lower(), pattern="[.]csv")):
