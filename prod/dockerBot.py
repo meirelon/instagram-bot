@@ -126,7 +126,7 @@ class InstagramBot:
                         follow_button = webdriver.find_element_by_css_selector('/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[2]/button')
 
                     if follow_button.text == 'Follow':
-                        follow_button.click()
+                        # follow_button.click()
 
                         new_followed.append(username)
                         new_followed_datetime.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
