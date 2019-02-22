@@ -79,7 +79,6 @@ class InstagramBot:
         return unfollow_user_df
 
     def follow_hashtag(self, webdriver, hashtag='travelblog', pages=10):
-        # hashtag_list = [x.strip() for x in hashtag_list.split(" ")]
         first_thumbnail_xpath = '//*[@id="react-root"]/section/main/article/div[1]/div/div/div[1]/div[1]/a/div'
         username_xpath = '/html/body/div[2]/div[2]/div/article/header/div[2]/div[1]/div[1]/h2/a'
         follow_button_xpath = '/html/body/div[2]/div/div[2]/div/article/header/div[2]/div[1]/div[2]/button'

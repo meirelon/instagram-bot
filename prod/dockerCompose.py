@@ -14,6 +14,7 @@ if __name__ == '__main__':
 	password = os.environ['password']
 	pages = os.environ['pages']
 	hashtag_list = os.environ['hashtag_list']
+	private_key = os.environ["private_key"]
 
 	instagram_bot = dockerBot.InstagramBot(username=username, password=password)
 	# First login to the website
@@ -27,9 +28,12 @@ if __name__ == '__main__':
 	# 							 chunksize=100)
 
 
-	if bool(re.search(string=hashtag_list.lower(), pattern="[.]csv")):
-		hashtag_list = [x[1:].strip()
-	        for x in pd.read_csv(hashtag_list, header=None)[0].values if len(x) > 0]
+	if hashtag_list.lower() == "bq":
+		q = """select distinct hashtag
+				from `{project_id}.instagram.hashtag_list`
+				where r = extract(dayofweek from current_date())""".format(project_id=project_id)
+		hashtag_df = pd.read_gbq(query=q, project_id=project_id, dialect="standard", private_key=private_key)
+		hashtag_list = [x.replace("#", "") for x in hashtag_df["hashtag"].values if len(x) > 0]
 	else:
 		hashtag_list = hashtag_list.split(" ")
 
@@ -38,7 +42,7 @@ if __name__ == '__main__':
 		try:
 			df = instagram_bot.follow_hashtag(webdriver=login_webdriver, hashtag=hashtag, pages=pages)
 			df.to_gbq(project_id=project_id,
-										 private_key="scarlet-labs.json",
+										 private_key=private_key,
 										 destination_table="instagram.{}".format(destination_table),
 										 if_exists="append",
 										 chunksize=100)
