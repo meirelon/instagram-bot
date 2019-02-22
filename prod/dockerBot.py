@@ -32,7 +32,7 @@ class InstagramBot:
         password = webdriver.find_element_by_name('password')
         password.send_keys(self.password)
 
-        button_login = webdriver.find_element_by_css_selector('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(3) > button')
+        button_login = webdriver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/article/div/div[1]/div/form/div[3]/button')
         button_login.click()
         sleep(3)
         return webdriver
