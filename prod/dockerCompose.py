@@ -33,7 +33,7 @@ if __name__ == '__main__':
 				from `{project_id}.instagram.hashtag_list`
 				where r = extract(dayofweek from current_date())""".format(project_id=project_id)
 		hashtag_df = pd.read_gbq(query=q, project_id=project_id, dialect="standard", private_key=private_key)
-		hashtag_list = [x.replace("#", "") for x in hashtag_df["hashtag"].values if len(x) > 0]
+		hashtag_list = [x.replace("#", "").strip().lower() for x in df["hashtag"].values if len(x) > 0]
 	else:
 		hashtag_list = hashtag_list.split(" ")
 
