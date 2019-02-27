@@ -143,7 +143,7 @@ class InstagramBot:
                         sleep(randint(5,10))
 
                         # Comments and tracker
-                        comment_choices = ["Really Cool!", "Nice Work :)", "Nice job!", "So cool! :)", "Wow, this is awesome!"]
+                        comment_choices = ["Really Cool!", "Nice Work", "Nice job!", "So cool!", "Wow, this is awesome!", "Wow!"]
                         comm_prob = randint(0,7)
                         print('{}_{}: {}'.format(hashtag, x, comm_prob), end=" ")
 
